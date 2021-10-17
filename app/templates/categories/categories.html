@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.js"></script>
+    <title>Categorias</title>
+</head>
+<body>
+  
+    <div class="container">
+      <div class="row">
+        <h2 class="h2">Categorías</h2>
+      </div>
+      <div class="row">
+        <a class="btn btn-primary" href="/categorias/nuevo">Crear categoría</a>
+      </div>
+      <div class="row">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages%}
+                {% if message == 'Categoría eliminada'%}
+                  {% set alert = "danger"%}
+                {% else %}
+                  {% set alert = "success" %}
+                {% endif %}
+                <div class="alert alert-{{alert}}" role="alert">
+                {{ message }}
+              {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+      </div>
+      <div class="row">
+        <script language="JavaScript">
+          $(document).ready(function() {
+              $('#tbCategoria').DataTable( {
+                  "language": {
+                      "decimal":        "",
+                      "emptyTable":     "Tabla vacía",
+                      "info":           "Mostrando _START_ a _END_ de _TOTAL_ Registros",
+                      "infoEmpty":      "Mostrando 0 a 0 de 0 Registros",
+                      "infoFiltered":   "(filtered de _MAX_ total Registros)",
+                      "infoPostFix":    "",
+                      "thousands":      ",",
+                      "lengthMenu":     "Mostrando _MENU_ Registros",
+                      "loadingRecords": "Cargando...",
+                      "processing":     "Procesando...",
+                      "search":         "Buscar:",
+                      "zeroRecords":    "No se encontró ningun registro",
+                      "paginate": {
+                          "first":      "Primero",
+                          "last":       "Último",
+                          "next":       "Siguiente",
+                          "previous":   "Anterior"
+                      },
+                      "aria": {
+                          "sortAscending":  ": Activar para ordenar columna ascendentemente",
+                          "sortDescending": ": Activar para ordenar columna descendentemente"
+                      }
+                  }
+              } );
+          } );
+        </script>
+        <table id="tbCategoria">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+          </thead>
+            {%for category in categories%}
+            <tr>
+                <td>{{category.id}}</td>
+                <td>{{category.name}}</td>
+                <td><a class="btn btn-success" href="/categorias/{{category.id}}/editar">Editar</a></td>
+                <td>
+                    <form onSubmit="return confirm('¿Desea eliminar esta categoría?');" action="{{url_for('delete_category', categoria_id = category.id)}}" method="POST">
+                    <input type="submit"  value="Eliminar" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+      </div>
+      <div class="row">
+        <a class="link-primary" href="../">regresar</a>
+      </div>
+    </div>
+</body>
+</html>

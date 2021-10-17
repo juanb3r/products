@@ -8,6 +8,7 @@ itsdangerous==2.0.1
 Jinja2==3.0.1
 MarkupSafe==2.0.1
 mccabe==0.6.1
+mysql-client==0.0.1
 mysql-connector-python==8.0.25
 protobuf==3.17.3
 pycodestyle==2.7.0

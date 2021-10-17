@@ -1,56 +1,85 @@
+from datetime import datetime
+
 from controllers.database_setup import Product
-from controllers.db_session import DBSession
+from app.app import db
 
 
-class ProductDB(DBSession):
+class ProductDB():
 
     def __init__(self) -> None:
-        super().__init__()
-        self.session = self.get_session()
+        self.db = db
 
     def show_products_tb(self) -> Product:
-        products = self.session.query(Product).all()
-        return products
+        try:
+            products = self.db.session.query(Product).all()
+        except Exception:
+            self.db.session.rollback()
+        finally:
+            self.db.session.close()
+            return products
 
     def new_product_tb(
             self,
-            name: str,
-            description: str,
+            category_id: int,
             code: str,
+            name: str,
+            image: str,
             stock: int,
-            c_stock,
-            price,
-            category_id,
-            state) -> bool:
+            current_stock: int,
+            price: int,
+            sell_price: int,
+            sells: int,
+            date: datetime) -> bool:
 
         new_product = Product(
-            name=name,
-            description=description,
-            code=code,
-            current_stock=c_stock,
-            stock=stock,
-            price=price,
             category_id=category_id,
-            state=state)
-
-        self.session.add(new_product)
-        self.session.commit()
-        self.session.close()
-        return True
+            code=code,
+            name=name,
+            image=image,
+            stock=stock,
+            current_stock=current_stock,
+            price=price,
+            sell_price=sell_price,
+            sells=sells,
+            date=date)
+        try:
+            self.db.session.add(new_product)
+            self.db.session.commit()
+        except Exception:
+            self.db.session.rollback()
+            return False
+        finally:
+            self.db.session.close()
+            return True
 
     def get_product_by_id_tb(self, id):
-        product = self.session.query(Product).filter_by(id=id).one()
-        return product
+        try:
+            product = self.db.session.query(Product).filter_by(id=id).one()
+        except Exception:
+            self.db.session.rollback()
+        finally:
+            self.db.session.close()
+            return product
 
     def edit_product_tb(self, product):
-        self.session.add(product)
-        self.session.commit()
-        self.session.close()
-        return True
+        try:
+            self.db.session.add(product)
+            self.db.session.commit()
+        except Exception:
+            self.db.session.rollback()
+            return False
+        finally:
+            self.db.session.close()
+            return True
 
     def delete_product_tb(self, id):
-        product = self.get_product_by_id_tb(id)
-        self.session.delete(product)
-        self.session.commit()
-        self.session.close()
-        return True
+        try:
+            product = self.get_product_by_id_tb(id)
+            self.db.session.delete(product)
+            self.db.session.commit()
+        except Exception:
+            self.db.session.rollback()
+            return False
+        finally:
+            self.db.session.close()
+            return True

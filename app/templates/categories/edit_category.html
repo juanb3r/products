@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Editar categoria</title>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <h1>Editar categoria {{ category.name }}</h1>
+    </div>
+    <div class="row">
+      {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages%} 
+                  <div class="alert alert-danger" role="alert">           
+                      {{ message }}
+                  </div>
+              {% endfor %} 
+          {% endif %}
+      {% endwith %}
+    </div>
+    <div class="row">
+      <form name="create" action="" method="POST" novalidate>
+        <fieldset class="form-group">
+          <legend>Editar categoría</legend>
+          {{form.hidden_tag()}}
+          <p>
+            {{form.name.label}}</br>
+            {{form.name(size=35, value=category.name)}}
+            {% for error in form.name.errors %}
+                <span class="error-message">{{ error }}</span>
+            {% endfor %}
+          </p>
+          <p>
+            {{form.submit(value="Editar")}}</br>
+          </p>
+        </fieldset>
+      </form>
+    </div>
+    <div class="row">
+      <a class="link-primary" href="/categorias">Regresar</a>
+    </div>
+  </div>
+</body>
+</html>
